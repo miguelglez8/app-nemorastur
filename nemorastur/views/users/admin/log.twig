@@ -1,0 +1,43 @@
+{% extends "layout.twig" %}
+
+{% block title %} Wallapop{% endblock %}
+{% block body %}
+
+    <h2>Listado de logs</h2>
+
+    <form action="/users/logAction" method="GET">
+        <div class="table-responsive">
+            <button type="submit" class="btn btn-info" name="action" value="deleteLogs">Eliminar todos</button>
+            <button type="submit" class="btn btn-info" name="action" value="Todos">Todos</button>
+            <button type="submit" class="btn btn-info" name="action" value="PET">PET</button>
+            <button type="submit" class="btn btn-info" name="action" value="ALTA">ALTA</button>
+            <button type="submit" class="btn btn-info" name="action" value="LOGIN-EX">LOGIN-EX</button>
+            <button type="submit" class="btn btn-info" name="action" value="LOGIN-ERR">LOGIN-ERR</button>
+            <button type="submit" class="btn btn-info" name="action" value="LOGOUT">LOGOUT</button>
+
+            <table class="table table-hover" id="tableUsers">
+                <thead>
+                <tr>
+                    <th scope="col">Tipo</th>
+                    <th scope="col">Fecha</th>
+                    <th scope="col">Descripción</th>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for log in logs %}
+                    <tr>
+                        <td scope="row">{{ log.type }}</td>
+                        <td scope="row">{{ log.date }}</td>
+                        <td scope="row">{{ log.description }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </form>
+
+{% endblock %}

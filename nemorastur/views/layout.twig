@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+
+<!-- Barra de Navegación superior -->
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+
+
+        </div>
+
+        <div class="collapse navbar-collapse" id="myNavbar">
+
+            {% if session.user != undefined %}
+
+                <ul class="nav navbar-nav">
+                    <li>
+                        <img src="/images/logo.png" alt="logo"/>
+                    </li>
+                    <li class="nav-item dropdown active">
+                        {% if session.user != null and session.user == "admin@email.com" %}
+                            <a class="nav-link dropdown-toggle" href="#" id="usersDropdown"
+                               role="button" data-toggle="dropdown" aria-haspopup="true"
+                               aria-expanded="false">Usuarios
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" id="adminList" href="/users/admin/list">Ver Usuarios</a>
+                            </div>
+                        {% endif %}
+                    </li>
+                    <li class="nav-item dropdown">
+                        {% if session.user != null and session.user == "admin@email.com" %}
+                            <a class="nav-link dropdown-toggle" href="#" id="usersDropdown"
+                               role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Logs</a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" id="myoffers" href="/users/admin/log">Ver logs</a>
+                                <br>
+                            </div>
+                        {% else %}
+                        <a class="nav-link dropdown-toggle" href="#" id="usersDropdown"
+                            role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Ofertas</a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" id="myoffers" href="/offers/myoffers">Mis Ofertas</a>
+                            <br>
+                            <a class="dropdown-item" id="addoffers" href="/offers/add">Añadir ofertas</a>
+                            <br>
+                            <a class="dropdown-item" id="list" href="/offers/searchOffers">Busca ofertas</a>
+                            <br>
+                            <a class="dropdown-item" id="buy" href="/offers/buy">Ofertas compradas</a>
+                        </div>
+                        {% endif %}
+                    </li>
+                </ul>
+            {% endif %}
+
+            <ul class="nav navbar-nav navbar-right">
+                {% if session.user != undefined %}
+                    <li id="email"><a>Email: {{session.user}}</a></li>
+                    <li id="money"><a>Money: {{money}} €</a></li>
+                    <li><a href="/users/logout"><span class="glyphicon glyphicon-log-in"></span>Cerrar sesión</a></li>
+                {% else %}
+                    <li><a href="/users/signup"><span class="glyphicon glyphicon-user"></span>Regístrate</a></li>
+                    <li><a href="/users/login"><span class="glyphicon glyphicon-log-in"></span> Identifícate</a></li>
+                {% endif %}
+            </ul>
+
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <script>
+        let params = new URLSearchParams(location.search);
+        let message = params.get("message");
+        let messageType = params.get("messageType");
+        if (message != null && message != "") {
+            if (messageType == "") {
+                messageType = 'alert-info';
+            }
+            $(".container")
+                .append("<div class='alert " + messageType + "'>" + message + " </div>");
+        }
+    </script>
+    {% block body %}{% endblock %}
+
+</div>
+</body>
+</html>

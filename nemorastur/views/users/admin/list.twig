@@ -1,0 +1,61 @@
+{% extends "layout.twig" %}
+{% block title %} Wallapop{% endblock %}
+{% block body %}
+
+    <h2>Listado de usuarios</h2>
+
+    <form action="/users/delete" method="GET">
+        <div class="table-responsive">
+            <button type="submit" class="btn btn-info" name="delete" id="btnDelete" value="delete">Eliminar</button>
+            <table class="table table-hover" id="tableUsers">
+                <thead>
+                <tr>
+                    <th scope="col"></th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Surname</th>
+                    <th scope="col">Email</th>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for user in users %}
+                    <tr>
+                        {% if user.rol != "ADMIN" %}
+                            <td>
+                                <input type="checkbox" id="cbDelete" name="deleteList" value="{{ user._id }}">
+                            </td>
+                        {% else %}
+                            <td></td>
+                        {% endif %}
+                        <td scope="row">{{ user.name }}</td>
+                        <td scope="row">{{ user.surname }}</td>
+                        <td scope="row">{{ user.email }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </form>
+
+    <!-- Paginación mostrar la actual y 2 anteriores y dos siguientes -->
+    <div class="row text-center">
+        <ul class="pagination">
+            {% for page in pages %}
+                <li class="page-item" id="pi-{{ page }}">
+                    {% if search != null and search != "" %}
+                        <a class="page-link" href="/users/admin/list?page={{ page }}&search={{ search }}"> {{ page }}</a>
+                    {% else %}
+                        <a class="page-link" href="/users/admin/list?page={{ page }}"> {{ page }}</a>
+                    {% endif %}
+                </li>
+            {% endfor %}
+            <script>
+                $("#pi-" + "{{ currentPage }}").addClass("active");
+            </script>
+        </ul>
+    </div>
+
+{% endblock %}
