@@ -1,5 +1,5 @@
 {% extends "layout.twig" %}
-{% block title %} Wallapop{% endblock %}
+{% block title %} Nemorastur {% endblock %}
 {% block body %}
 
     <h2>Listado de usuarios</h2>
@@ -11,10 +11,10 @@
                 <thead>
                 <tr>
                     <th scope="col"></th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Surname</th>
-                    <th scope="col">Email</th>
-                    <th scope="col"></th>
+                    <th scope="col">Nombre de usuario</th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Apellidos</th>
+                    <th scope="col">Número de partes realizados</th>
                     <th scope="col"></th>
                     <th scope="col"></th>
                     <th scope="col"></th>
@@ -30,9 +30,10 @@
                         {% else %}
                             <td></td>
                         {% endif %}
+                        <td scope="row">{{ user.username }}</td>
                         <td scope="row">{{ user.name }}</td>
                         <td scope="row">{{ user.surname }}</td>
-                        <td scope="row">{{ user.email }}</td>
+                        <td scope="row">{{ user.parts }}</td>
                     </tr>
                 {% endfor %}
                 </tbody>

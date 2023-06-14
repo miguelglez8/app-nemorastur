@@ -28,42 +28,6 @@ module.exports = {
     },
 
     /**
-     *
-     * @param filter
-     * @param options
-     * @returns {Promise<*>}
-     */
-    updateUser: async function (filter, options) {
-        try {
-            const client = await getConnection(this.mongoClient,this.app.get('connectionStrings'))
-            const database = client.db("entrega2");
-            const collectionName = 'users';
-            const usersCollection = database.collection(collectionName);
-            return await usersCollection.updateOne(filter, options);
-        } catch (error) {
-            throw (error);
-        }
-    },
-
-
-    /**
-     * @param filter
-     * @param options
-     * @returns {Promise<*>}
-     */
-    getUsers: async function (filter, options) {
-        try {
-            const client =await getConnection(this.mongoClient,this.app.get('connectionStrings'))
-            const database = client.db("entrega2");
-            const collectionName = 'users';
-            const usersCollection = database.collection(collectionName);
-            return await usersCollection.find(filter, options).toArray();
-        } catch (error) {
-            throw (error);
-        }
-    },
-
-    /**
      * @param filter
      * @param options
      * @param page
@@ -116,21 +80,6 @@ module.exports = {
             throw (error);
         }
     },
-
-    resetUsers: async function (users) {
-        try {
-            const client = await getConnection(this.mongoClient,this.app.get('connectionStrings'))
-            const database = client.db("entrega2");
-            const collectionName = 'users';
-            const usersCollection = database.collection(collectionName);
-            await usersCollection.deleteMany();
-            await usersCollection.insertMany(users);
-            return true;
-        } catch(error){
-            throw error;
-        }
-    },
-
 
     deleteUser: async function (filter, options) {
         try {

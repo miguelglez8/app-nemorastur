@@ -1,33 +1,118 @@
 {% extends "layout.twig" %}
-{% block title %} Tienda – uoMusic {% endblock %}
+{% block title %} Nemorastur {% endblock %}
 {% block body %}
-    <h2>Añadir oferta</h2>
+    <h2>Añadir parte</h2>
     <form class="form-horizontal" method="post" action="/offers/add">
         <div class="form-group">
             <label class="control-label col-sm-2" for="title">Título:</label>
             <div class="col-sm-10">
                 <input id="title" type="text" class="form-control" name="title"
-                       placeholder="Oferta 1" required="true" />
+                       placeholder="Parte realizado el 6 de junio" required="true" />
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-sm-2" for="detail">Detalles:</label>
+            <label class="control-label col-sm-2" for="date">Fecha:</label>
             <div class="col-sm-10">
-                <input id="detail" type="text" class="form-control" name="detail"
-                       placeholder="Detalle 1" required="true" />
+                <input id="birthdate" type="date" class="form-control" name="date"
+                       placeholder="DD/MM/AAAA" required="true" />
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-sm-2" for="price">Precio:</label>
+            <label class="control-label col-sm-2" for="client">Cliente:</label>
             <div class="col-sm-10">
-                <input id="price" type="number" class="form-control" name="price"
+                <input id="detail" type="text" class="form-control" name="client"
+                       placeholder="Fernando Suárez" required="true" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="place">Lugar:</label>
+            <div class="col-sm-10">
+                <input id="detail" type="text" class="form-control" name="place"
+                       placeholder="Moreda de Aller" required="true" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="dateS">Hora de comienzo:</label>
+            <div class="col-sm-10">
+                <input id="price" type="number" class="form-control" name="dateS"
                        placeholder="4" required="true" />
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-sm-2" for="highlight">Destacar:</label>
+            <label class="control-label col-sm-2" for="dateF">Hora de final:</label>
             <div class="col-sm-10">
-                <input id="highlight" type="checkbox" class="form-control" name="highlight"/>
+                <input id="price" type="number" class="form-control" name="dateF"
+                       placeholder="4" required="true" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="employees">Empleado(s) partícipes:</label>
+            <div class="col-sm-10">
+                <input id="detail" type="text" class="form-control" name="employees"
+                       placeholder="Introduzca su nombre de usuario (fernando33)" required="true" />
+            </div>
+        </div>
+        <h4>* Seleccione una única opción:</h4>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="highlight">Obra nueva</label>
+            <div class="col-sm-10">
+                <input id="highlight" type="radio" class="form-control" name="highlight"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="highlight">Mantenimiento</label>
+            <div class="col-sm-10">
+                <input id="highlight" type="radio" class="form-control" name="highlight"/>
+            </div>
+        </div>
+        <h4>* Seleccione las tareas realizadas:</h4>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="task">Segar el césped y desorillar</label>
+            <div class="col-sm-10">
+                <input id="detail" type="checkbox" class="form-control" name="task"
+                       placeholder="" required="true" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="task">Limpieza y barrido de viales</label>
+            <div class="col-sm-10">
+                <input id="detail" type="checkbox" class="form-control" name="task"
+                       placeholder="" required="true" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="task">Mantenimiento de terrarios</label>
+            <div class="col-sm-10">
+                <input id="detail" type="checkbox" class="form-control" name="task"
+                       placeholder="" required="true" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="task">Poda de árboles y arbustos</label>
+            <div class="col-sm-10">
+                <input id="detail" type="checkbox" class="form-control" name="task"
+                       placeholder="" required="true" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="material">Material empleado:</label>
+            <div class="col-sm-10">
+                <input id="detail" type="text" class="form-control" name="material"
+                       placeholder="Material 1, material 2..." required="true" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="cash">Presupuesto:</label>
+            <div class="col-sm-10">
+                <input id="detail" type="number" class="form-control" name="cash"
+                       placeholder="120€" required="true" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="observations">Observaciones:</label>
+            <div class="col-sm-10">
+                <input id="detail" type="text" class="form-control" name="observations"
+                       placeholder="Introduza las observaciones oportunas..." required="true" />
             </div>
         </div>
         <div class="form-group">
