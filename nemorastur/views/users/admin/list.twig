@@ -2,9 +2,9 @@
 {% block title %} Nemorastur {% endblock %}
 {% block body %}
 
-    <h2>Listado de usuarios</h2>
+    <h2>Listado de empleados registrados</h2>
 
-    <form action="/users/delete" method="GET">
+    <form action="/users/deletee/{{ currentPage }}" method="GET">
         <div class="table-responsive">
             <button type="submit" class="btn btn-info" name="delete" id="btnDelete" value="delete">Eliminar</button>
             <table class="table table-hover" id="tableUsers">
@@ -14,8 +14,6 @@
                     <th scope="col">Nombre de usuario</th>
                     <th scope="col">Nombre</th>
                     <th scope="col">Apellidos</th>
-                    <th scope="col">Número de partes realizados</th>
-                    <th scope="col"></th>
                     <th scope="col"></th>
                     <th scope="col"></th>
                 </tr>
@@ -33,7 +31,6 @@
                         <td scope="row">{{ user.username }}</td>
                         <td scope="row">{{ user.name }}</td>
                         <td scope="row">{{ user.surname }}</td>
-                        <td scope="row">{{ user.parts }}</td>
                     </tr>
                 {% endfor %}
                 </tbody>
@@ -47,9 +44,9 @@
             {% for page in pages %}
                 <li class="page-item" id="pi-{{ page }}">
                     {% if search != null and search != "" %}
-                        <a class="page-link" href="/users/admin/list?page={{ page }}&search={{ search }}"> {{ page }}</a>
+                        <a class="page-link" href="/users/list?page={{ page }}&search={{ search }}"> {{ page }}</a>
                     {% else %}
-                        <a class="page-link" href="/users/admin/list?page={{ page }}"> {{ page }}</a>
+                        <a class="page-link" href="/users/list?page={{ page }}"> {{ page }}</a>
                     {% endif %}
                 </li>
             {% endfor %}

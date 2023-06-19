@@ -1,11 +1,12 @@
 {% extends "layout.twig" %}
-{% block title %} Mis Partes – Nemorastur {% endblock %}
+{% block title %} Ver Partes – Nemorastur {% endblock %}
 {% block body %}
+    {% if session.user != null and session.user == "admin" %}
     <div id="custom-search-input ">
-        <form method="get" action="/offers/searchOffers">
+        <form method="get" action="/users/searchOffers">
             <div class="input-group col-xs-8 col-sm-6 col-md-4 col-lg-5 pull-right">
                 <input id="search" type="text" class="search-query form-control"
-                       placeholder="Nombre del parte" name="search" value={{ search }}>
+                       placeholder="" name="search" value={{ search }}>
                 <span class="input-group-btn">
                 <button class="btn" type="submit">
                 <span class="glyphicon glyphicon-search"></span>
@@ -14,9 +15,15 @@
             </div>
         </form>
     </div>
-    <h1>Busca partes por título</h1>
+    <h1>Busca los partes de un empleado (por su nombre de usuario):</h1>
+    {% endif %}
+
+    {% if session.user != null and session.user != "admin" %}
+        <h1>Aquí puede consultar sus partes realizados:</h1>
+    {% endif %}
+
     <div class="row text-right">
-        <a href="/offers/add" class="btn btn-info" role="button">Agregar nuevo parte</a>
+        <a href="/users/add" class="btn btn-info" role="button">Agregar nuevo parte</a>
     </div>
     <div class="table-responsive">
         <table class="table table-hover">
@@ -26,10 +33,10 @@
                 <th>Fecha</th>
                 <th>Cliente</th>
                 <th>Lugar</th>
-                <th>Hora de comienzo</th>
-                <th>Hora de final</th>
+                <th>Hora de comienzo (09:45)</th>
+                <th>Hora de final (09:55)</th>
                 <th>Duración en horas</th>
-                <th>Empleado(s) que realizaron el trabajo</th>
+                <th>Empleado que realizó el trabajo</th>
                 <th>Obra nueva/Mantenimiento</th>
                 <th>Tareas que se realizan</th>
                 <th>Material empleado</th>
@@ -48,13 +55,13 @@
                     <td>{{ offer.dateS }}</td>
                     <td>{{ offer.dateF }}</td>
                     <td>{{ offer.duration }}</td>
-                    <td>{{ offer.employees }}</td>
-                    <td>{{ offer.character }}</td>
+                    <td>{{ offer.employee }}</td>
+                    <td>{{ offer.type }}</td>
                     <td>{{ offer.tasks }}</td>
                     <td>{{ offer.material }}</td>
-                    <td>{{ offer.cash }}</td>
+                    <td>{{ offer.euros }}</td>
                     <td>{{ offer.observations }}</td>
-                    <td><a href="/offers/delete/{{ offer._id }}">Eliminar</a> <br>
+                    <td><a href="/users/elimina/{{ offer._id }}/{{ currentPage }}">Eliminar</a> <br>
                     </td>
                 </tr>
             {% endfor %}
@@ -67,9 +74,9 @@
             {% for page in pages %}
                 <li class="page-item" id="pi-{{ page }}">
                     {% if search %}
-                        <a class="page-link" href="/offers/myoffers?page={{ page }}&search={{ search }}">{{ page }}</a>
+                        <a class="page-link" href="/users/myoffers?page={{ page }}&search={{ search }}">{{ page }}</a>
                     {% else %}
-                        <a class="page-link" href="/offers/myoffers?page={{ page }}">{{ page }}</a>
+                        <a class="page-link" href="/users/myoffers?page={{ page }}">{{ page }}</a>
                     {% endif %}
                 </li>
             {% endfor %}

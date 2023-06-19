@@ -11,7 +11,7 @@ module.exports = function (app, usersRepository) {
     /**
      * Listado de admin
      */
-    app.get("/users/admin/list", function (req, res) {
+    app.get("/users/list", function (req, res) {
         let filter = {};
         let options = {sort: {username: 1}};
 
@@ -56,8 +56,12 @@ module.exports = function (app, usersRepository) {
     /**
      * Funcionalidad borrado de usuarios
      */
-    app.get('/users/delete', function (req, res) {
+    app.get('/users/deletee/:page', function (req, res) {
         var list = [];
+        let page = parseInt(req.params.page);
+        if (typeof req.params.page === "undefined" || req.params.page === null || req.params.page === "0") {
+            page = 1;
+        }
         if (req.query.deleteList != null && req.query.deleteList != undefined) {
             if (!Array.isArray(req.query.deleteList)) {
                 list[0] = req.query.deleteList;
@@ -70,7 +74,7 @@ module.exports = function (app, usersRepository) {
             }
         }
 
-        res.redirect("/users/admin/list");
+        res.redirect("/users/list?page="+page);
     });
 
     /**
@@ -109,7 +113,10 @@ module.exports = function (app, usersRepository) {
                     "&messageType=alert-danger ");
             } else {
                 req.session.user = user.username;
-                res.redirect("/offers/myoffers");
+                if (user.username=="admin")
+                    res.redirect("/users/list")
+                else
+                    res.redirect("/users/myoffers")
             }
         }).catch(() => {
             req.session.user = null;
@@ -130,8 +137,6 @@ module.exports = function (app, usersRepository) {
      * Registro de usuarios POST
      */
     app.post('/users/signup', async function (req, res) {
-        let birthdate = req.body.birthdate;
-
         let securePassword = app.get("crypto").createHmac('sha256', app.get('clave'))
             .update(req.body.password).digest('hex');
         let user = {
@@ -139,10 +144,8 @@ module.exports = function (app, usersRepository) {
             password: securePassword,
             name: req.body.name,
             surname: req.body.surname,
-            birthdate: birthdate,
             rol: "STANDARD",
         }
-
 
         await validateUser(user, req.body.password, req.body.passwordConfirm).then(result => {
             if (result.length > 0) {
@@ -183,19 +186,6 @@ module.exports = function (app, usersRepository) {
 
         if (userFound != null) {
             errors.push("El nombre de usuario ya existe, por favor introduce uno nuevo");
-        }
-        //check that the birthdate format is correct
-        let birthdateRegex = /^(\d{4})-(\d{2})-(\d{2})$/;
-        if (!birthdateRegex.test(user.birthdate)) {
-            errors.push("La fecha de nacimiento no tiene un formato correcto. El formato debe ser DD-MM-YYYY");
-        } else {
-            //parse the birthdate string to a date object
-            let birthdate = new Date(user.birthdate.split("-").reverse().join("-"));
-            let today = new Date();
-            //compare the birthdate to today
-            if (birthdate > today) {
-                errors.push("La fecha de nacimiento no puede ser posterior a hoy");
-            }
         }
 
         return errors;

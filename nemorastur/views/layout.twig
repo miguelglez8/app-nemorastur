@@ -39,19 +39,21 @@
                                aria-expanded="false">Empleados
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" id="adminList" href="/users/admin/list">Ver Empleados</a>
+                                <a class="dropdown-item" id="adminList" href="/users/list">Ver Empleados</a>
                             </div>
                         {% endif %}
                     </li>
+
                     <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="usersDropdown"
                                role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Partes</a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" id="myoffers" href="/offers/myoffers">Ver Partes</a>
+                                <a class="dropdown-item" id="myoffers" href="/users/myoffers">Ver Partes</a>
                                 <br>
-                                <a class="dropdown-item" id="addoffers" href="/offers/add">Añadir parte</a>
+                                <a class="dropdown-item" id="addoffers" href="/users/add">Añadir parte</a>
                             </div>
                     </li>
+
                 </ul>
             {% endif %}
 

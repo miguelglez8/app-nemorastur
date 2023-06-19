@@ -72,18 +72,12 @@ let indexRouter = require('./routes/index');
 let userSessionRouter = require('./routes/userSessionRouter');
 let userAdminRouter = require('./routes/userAdminRouter');
 
-app.use("/users/list", userSessionRouter);
-app.use("/users/current", userSessionRouter);
-
 app.use("/offers/add",userSessionRouter);
 app.use("/offers/list",userSessionRouter);
 app.use("/offers/myoffers",userSessionRouter);
 app.use("/offers/*", userSessionRouter);
 app.use("/users/admin/list", userAdminRouter);
-app.use("/users/admin/log", userAdminRouter);
 app.use("/users/delete", userAdminRouter);
-app.use("/users/logAction", userAdminRouter);
-
 
 const userTokenRouter = require('./routes/userTokenRouter');
 const {getConnection} = require("./repositories/db");
