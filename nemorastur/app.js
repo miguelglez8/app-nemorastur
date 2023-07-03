@@ -2,10 +2,12 @@ let createError = require('http-errors');
 let express = require('express');
 let path = require('path');
 const fs = require('fs');
+const requestIp = require('request-ip');
 
 let app = express();
 
 
+app.use(requestIp.mw());
 
 
 /**
@@ -92,7 +94,7 @@ app.set('view engine', 'twig');
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
-require("./routes/users.js")(app, usersRepository);
+require("./routes/users.js")(app, usersRepository, offersRepository);
 
 require("./routes/offers.js")(app, usersRepository, offersRepository);
 

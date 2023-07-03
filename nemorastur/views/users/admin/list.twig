@@ -14,7 +14,7 @@
                     <th scope="col">Nombre de usuario</th>
                     <th scope="col">Nombre</th>
                     <th scope="col">Apellidos</th>
-                    <th scope="col"></th>
+                    <th scope="col">Número de partes registrados</th>
                     <th scope="col"></th>
                 </tr>
                 </thead>
@@ -31,6 +31,10 @@
                         <td scope="row">{{ user.username }}</td>
                         <td scope="row">{{ user.name }}</td>
                         <td scope="row">{{ user.surname }}</td>
+                        <td scope="row">{{ user.partes }}</td>
+                        {% if user.rol != "ADMIN" %}
+                            <td><a href="/users/myoffers?user={{ user.username }}">Ver Partes</a> </td>
+                        {% endif %}
                     </tr>
                 {% endfor %}
                 </tbody>

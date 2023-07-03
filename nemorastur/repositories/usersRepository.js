@@ -94,5 +94,23 @@ module.exports = {
         }
     },
 
+    /**
+     *
+     * @param filter
+     * @param options
+     * @returns {Promise<*>}
+     */
+    updateUser: async function (filter, options) {
+        try {
+            const client = await getConnection(this.mongoClient,this.app.get('connectionStrings'))
+            const database = client.db("entrega2");
+            const collectionName = 'users';
+            const usersCollection = database.collection(collectionName);
+            return await usersCollection.updateOne(filter, options);
+        } catch (error) {
+            throw (error);
+        }
+    }
+
 
 };

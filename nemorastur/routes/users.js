@@ -1,5 +1,5 @@
 const {ObjectId} = require("mongodb");
-module.exports = function (app, usersRepository) {
+module.exports = function (app, usersRepository, offersRepository) {
 
     /**
      * Funcionalidad GET de login
@@ -81,12 +81,16 @@ module.exports = function (app, usersRepository) {
      * Funcion que borra un usuario
      */
     function deleteUser(userId, res) {
-        usersRepository.deleteUser({_id: new ObjectId(userId)}, {}).then(result => {
-            if (result == null || result.deletedCount == 0) {
-                res.write("No se ha podido eliminar el registro");
-            } else {
-                res.end();
-            }
+        usersRepository.findUser({_id: new ObjectId(userId)}, {}).then(a => {
+            offersRepository.deleteOffer({employee: a.username}, {}).then(r => {
+                usersRepository.deleteUser({_id: new ObjectId(userId)}, {}).then(result => {
+                    if (result == null || result.deletedCount == 0) {
+                        res.write("No se ha podido eliminar el registro");
+                    } else {
+                        res.end();
+                    }
+                })
+            })
         }).catch( () => {
             res.redirect("/" +
                 "?message=Ha ocurrido un error al eliminar usuarios." +
@@ -144,6 +148,7 @@ module.exports = function (app, usersRepository) {
             password: securePassword,
             name: req.body.name,
             surname: req.body.surname,
+            partes: 0,
             rol: "STANDARD",
         }
 

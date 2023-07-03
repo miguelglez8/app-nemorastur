@@ -90,7 +90,7 @@ module.exports = {
             const database = client.db("entrega2");
             const collectionName = 'offers';
             const songsCollection = database.collection(collectionName);
-            const result = await songsCollection.deleteOne(filter, options);
+            const result = await songsCollection.deleteMany(filter, options);
             return result;
         } catch (error) {
             throw (error);

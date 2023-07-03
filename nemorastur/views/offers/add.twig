@@ -25,10 +25,10 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-sm-2" for="place">Lugar:</label>
+            <label class="control-label col-sm-2" for="lug">Ubicación (no editar):</label>
             <div class="col-sm-10">
-                <input id="detail" type="text" class="form-control" name="place"
-                       placeholder="Moreda de Aller" required="true" />
+                <input id="lug" type="text" class="form-control" name="lug"
+                       placeholder="" required="true" readonly/>
             </div>
         </div>
         <div class="form-group">
@@ -92,4 +92,13 @@
             </div>
         </div>
     </form>
+
+    <script>
+        navigator.geolocation.watchPosition(async function (position) {
+            const { latitude, longitude } = position.coords;
+            await fetch("https://geocode.maps.co/reverse?lat=" + Number(latitude) + "&lon=" + Number(longitude)).then(lugar => {
+                return lugar.json();}).then(p => $("#lug")
+                .val(p.address.town + ", " + p.address.city + ", " + p.address.state))
+        });
+    </script>
 {% endblock %}
