@@ -74,28 +74,19 @@ module.exports = function (app, usersRepository, offersRepository) {
             }
         }
 
-        res.redirect("/users/list?page="+page);
+        res.redirect("/users/list?page=" + page);
     });
 
     /**
      * Funcion que borra un usuario
      */
-    function deleteUser(userId, res) {
-        usersRepository.findUser({_id: new ObjectId(userId)}, {}).then(a => {
-            offersRepository.deleteOffer({employee: a.username}, {}).then(r => {
-                usersRepository.deleteUser({_id: new ObjectId(userId)}, {}).then(result => {
-                    if (result == null || result.deletedCount == 0) {
-                        res.write("No se ha podido eliminar el registro");
-                    } else {
-                        res.end();
-                    }
-                })
-            })
-        }).catch( () => {
-            res.redirect("/" +
-                "?message=Ha ocurrido un error al eliminar usuarios." +
-                "&messageType=alert-danger ")
-        });
+    async function deleteUser(userId, res) {
+        let userFound = await usersRepository.findUser({_id: new ObjectId(userId)}, {});
+
+        usersRepository.deleteUser({_id: new ObjectId(userId)}, {}).then(async result => {
+            await offersRepository.deleteOffer({employee: userFound.username}, {})
+            res.end();
+        })
     }
 
     /**

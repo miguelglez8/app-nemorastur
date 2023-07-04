@@ -91,8 +91,6 @@ module.exports = function (app, usersRepository, offersRepository) {
             rees.push(tareas[3])
         }
 
-        console.log(req.body.lug)
-
         usersRepository.updateUser({username: req.session.user}, {$inc: {partes: 1}}).then(async result => {
             let offer = {
                 title: req.body.title,
