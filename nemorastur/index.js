@@ -85,5 +85,3 @@ function onListening() {
         : 'port ' + addr.port;
     console.log('Listening on ' + bind);
 }
-
-module.exports = app;

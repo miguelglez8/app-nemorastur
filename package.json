@@ -2,7 +2,8 @@
   "name": "sdi2023-entrega2-13",
   "version": "1.0.0",
   "scripts": {
-    "start": "node ./nemorastur/index.js"
+    "start": "node ./nemorastur/index.js",
+    "build": "netlify deploy --prod"
   },
   "dependencies": {
     "axios": "^1.4.0",
@@ -21,10 +22,13 @@
     "log4js": "^6.9.1",
     "moment": "^2.29.4",
     "mongodb": "^5.3.0",
+    "netlify-cli": "^15.8.0",
+    "netlify-lambda": "^2.0.16",
     "node-fetch": "^3.3.1",
     "node-geocoder": "^4.2.0",
     "playwright": "^1.35.1",
     "request-ip": "^3.3.0",
+    "serverless-http": "^3.2.0",
     "twig": "^1.16.0"
   },
   "devDependencies": {

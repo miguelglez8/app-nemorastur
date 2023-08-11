@@ -1,5 +1,6 @@
 let createError = require('http-errors');
 let express = require('express');
+const serverless = require('serverless-http')
 let path = require('path');
 const fs = require('fs');
 const requestIp = require('request-ip');
