@@ -2,8 +2,7 @@
   "name": "sdi2023-entrega2-13",
   "version": "1.0.0",
   "scripts": {
-    "start": "node ./nemorastur/index.js",
-    "build": "netlify deploy --prod"
+    "start": "node bin/www.js"
   },
   "dependencies": {
     "axios": "^1.4.0",
