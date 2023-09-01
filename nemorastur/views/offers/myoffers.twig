@@ -15,7 +15,7 @@
             </div>
         </form>
     </div>
-    <h1>Busca los partes de un empleado (por su nombre de usuario):</h1>
+    <h1>Busca los partes por nombre del cliente:</h1>
     {% endif %}
 
     {% if session.user != null and session.user != "admin" %}
@@ -33,8 +33,8 @@
                 <th>Fecha</th>
                 <th>Cliente</th>
                 <th>Lugar</th>
-                <th>Hora de comienzo (09:45)</th>
-                <th>Hora de final (09:55)</th>
+                <th>Hora de comienzo de la obra</th>
+                <th>Hora de final de la obra</th>
                 <th>Duración en horas</th>
                 <th>Empleado que realizó el trabajo</th>
                 <th>Obra nueva/Mantenimiento</th>
@@ -42,6 +42,9 @@
                 <th>Material empleado</th>
                 <th>Presupuesto en €</th>
                 <th>Observaciones</th>
+                <th>Estado de facturación</th>
+                <th>¿Desea eliminarlo?</th>
+                <th>¿Desea cambiar el estado de facturación?</th>
                 <th class="col-md-1"></th>
             </tr>
             </thead>
@@ -61,7 +64,14 @@
                     <td>{{ offer.material }}</td>
                     <td>{{ offer.euros }}</td>
                     <td>{{ offer.observations }}</td>
+                    <td>{{ offer.state }}</td>
                     <td><a href="/users/elimina/{{ offer._id }}/{{ currentPage }}">Eliminar</a> <br>
+                        {% if session.user != null and session.user == "admin" and offer.state == "PENDIENTE DE FACTURAR" %}
+                            <td><a href="/users/facturar/{{ offer._id }}/{{ currentPage }}">Facturar</a> <br>
+                        {% endif %}
+                        {% if session.user != null and session.user == "admin" and offer.state == "FACTURADO" %}
+                            <td><a href="/users/mover/{{ offer._id }}/{{ currentPage }}">Mover a pendiente</a> <br>
+                        {% endif %}
                     </td>
                 </tr>
             {% endfor %}
@@ -73,10 +83,20 @@
         <ul class="pagination">
             {% for page in pages %}
                 <li class="page-item" id="pi-{{ page }}">
-                    {% if search %}
-                        <a class="page-link" href="/users/myoffers?page={{ page }}&search={{ search }}">{{ page }}</a>
-                    {% else %}
-                        <a class="page-link" href="/users/myoffers?page={{ page }}">{{ page }}</a>
+                    {% if session.user != null and session.user == "admin" %}
+                        {% if search %}
+                            <a class="page-link" href="/users/searchOffers?page={{ page }}&search={{ search }}">{{ page }}</a>
+                        {% else %}
+                            <a class="page-link" href="/users/searchOffers?page={{ page }}">{{ page }}</a>
+                        {% endif %}
+                    {% endif %}
+
+                    {% if session.user != null and session.user != "admin" %}
+                        {% if search %}
+                            <a class="page-link" href="/users/myoffers?page={{ page }}&search={{ search }}">{{ page }}</a>
+                        {% else %}
+                            <a class="page-link" href="/users/myoffers?page={{ page }}">{{ page }}</a>
+                        {% endif %}
                     {% endif %}
                 </li>
             {% endfor %}

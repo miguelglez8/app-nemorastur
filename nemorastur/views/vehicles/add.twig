@@ -1,0 +1,132 @@
+{% extends "layout.twig" %}
+{% block title %} Nemorastur {% endblock %}
+{% block body %}
+    <h2>Añadir control de vehículo</h2>
+    <form class="form-horizontal" method="post" action="/users/addvehicle">
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="matricula">Matrícula:</label>
+            <div class="col-sm-10">
+                <input id="title" type="text" class="form-control" name="matricula"
+                       placeholder="1234HYJ" required="true" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="marca">Marca:</label>
+            <div class="col-sm-10">
+                <input id="title" type="text" class="form-control" name="marca"
+                       placeholder="Audi" required="true" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="modelo">Modelo:</label>
+            <div class="col-sm-10">
+                <input id="title" type="text" class="form-control" name="modelo"
+                       placeholder="A3" required="true" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="kms">KMS:</label>
+            <div class="col-sm-10">
+                <input id="detail" type="number" class="form-control" name="kms"
+                       placeholder="15000" required="true" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="itv">Fecha ITV:</label>
+            <div class="col-sm-10">
+                <input id="birthdate" type="date" class="form-control" name="itv"
+                       placeholder="DD/MM/AAAA" required="true" />
+            </div>
+        </div>
+
+        <h4>* NIVELES. Seleccione una única opción:</h4>
+
+        <h5>* AGUA:</h5>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="agua">OK</label>
+            <div class="col-sm-10">
+                <input id="agua" type="radio" required="true" class="form-control" name="agua"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="agua">NO OK</label>
+            <div class="col-sm-10">
+                <input id="agua" type="radio" required="true" class="form-control" name="agua"/>
+            </div>
+        </div>
+
+        <h5>* ACEITE:</h5>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="aceite">OK</label>
+            <div class="col-sm-10">
+                <input id="aceite" type="radio" required="true" class="form-control" name="aceite"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="aceite">NO OK</label>
+            <div class="col-sm-10">
+                <input id="aceite" type="radio" required="true" class="form-control" name="aceite"/>
+            </div>
+        </div>
+
+        <h5>* LÍQUIDO DE FRENOS:</h5>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="frenos">OK</label>
+            <div class="col-sm-10">
+                <input id="frenos" type="radio" required="true" class="form-control" name="frenos"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="frenos">NO OK</label>
+            <div class="col-sm-10">
+                <input id="frenos" type="radio" required="true" class="form-control" name="frenos"/>
+            </div>
+        </div>
+
+        <h5>* ESTADO DE NEUMÁTICOS:</h5>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="neumaticos">OK</label>
+            <div class="col-sm-10">
+                <input id="neumaticos" type="radio" required="true" class="form-control" name="neumaticos"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="neumaticos">NO OK</label>
+            <div class="col-sm-10">
+                <input id="neumaticos" type="radio" required="true" class="form-control" name="neumaticos"/>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="comentarios">Comentarios:</label>
+            <div class="col-sm-10">
+                <input id="detail" type="text" class="form-control" name="comentarios"
+                       placeholder="Introduzca el comentario oportuno..." required="true" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="fecha">Fecha de revisión:</label>
+            <div class="col-sm-10">
+                <input id="birthdate" type="date" class="form-control" name="fecha"
+                       placeholder="DD/MM/AAAA" required="true" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-primary">Añadir</button>
+            </div>
+        </div>
+    </form>
+
+    <script>
+        navigator.geolocation.watchPosition(async function (position) {
+            const { latitude, longitude } = position.coords;
+            await fetch("https://geocode.maps.co/reverse?lat=" + Number(latitude) + "&lon=" + Number(longitude)).then(lugar => {
+                return lugar.json();}).then(p => $("#lug")
+                .val(p.address.town + ", " + p.address.city + ", " + p.address.state))
+        });
+    </script>
+{% endblock %}

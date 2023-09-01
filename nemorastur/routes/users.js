@@ -140,6 +140,8 @@ module.exports = function (app, usersRepository, offersRepository) {
             name: req.body.name,
             surname: req.body.surname,
             partes: 0,
+            vehicles: 0,
+            machines: 0,
             rol: "STANDARD",
         }
 

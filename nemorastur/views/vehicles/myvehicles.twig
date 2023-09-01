@@ -1,0 +1,84 @@
+{% extends "layout.twig" %}
+{% block title %} Ver Vehículos – Nemorastur {% endblock %}
+{% block body %}
+    {% if session.user != null and session.user != "admin" %}
+        <h1>Aquí puede consultar sus controles de vehículos realizados:</h1>
+    {% endif %}
+
+    {% if session.user != null and session.user == "admin" %}
+        <h1>Aquí puede consultar todos los controles de vehículos realizados:</h1>
+    {% endif %}
+
+    <div class="row text-right">
+        <a href="/users/addvehicle" class="btn btn-info" role="button">Agregar nuevo control de vehículo</a>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>Matrícula</th>
+                <th>Marca</th>
+                <th>Modelo</th>
+                <th>KMS</th>
+                <th>Fecha de ITV</th>
+                <th>Agua</th>
+                <th>Aceite</th>
+                <th>Líquido de frenos</th>
+                <th>Estado de neumáticos</th>
+                <th>Comentarios</th>
+                <th>Fecha de revisión</th>
+                <th>Trabajador</th>
+                <th>¿Desea eliminarlo?</th>
+                <th class="col-md-1"></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for offer in offers %}
+                <tr>
+                    <td>{{ offer.matricula }}</td>
+                    <td>{{ offer.marca }}</td>
+                    <td>{{ offer.modelo }}</td>
+                    <td>{{ offer.kms }}</td>
+                    <td>{{ offer.itv }}</td>
+                    <td>{{ offer.agua }}</td>
+                    <td>{{ offer.aceite }}</td>
+                    <td>{{ offer.frenos }}</td>
+                    <td>{{ offer.neumaticos }}</td>
+                    <td>{{ offer.comentarios }}</td>
+                    <td>{{ offer.fecha }}</td>
+                    <td>{{ offer.trabajador }}</td>
+                    <td><a href="/users/eliminavehicle/{{ offer._id }}/{{ currentPage }}">Eliminar</a> <br>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="row text-center">
+        <ul class="pagination">
+            {% for page in pages %}
+                <li class="page-item" id="pi-{{ page }}">
+                    {% if search %}
+                        <a class="page-link" href="/users/myvehicles?page={{ page }}&search={{ search }}">{{ page }}</a>
+                    {% else %}
+                        <a class="page-link" href="/users/myvehicles?page={{ page }}">{{ page }}</a>
+                    {% endif %}
+                </li>
+            {% endfor %}
+            <script>
+                $("#pi-" + "{{ currentPage }}").addClass("active");
+            </script>
+        </ul>
+    </div>
+
+    <script>
+        let urlParams = new URLSearchParams(window.location.search)
+        let errors = urlParams.get("errors")
+        let page = urlParams.get("page")
+        if (errors != null)
+            $("#errors").append(`<li class="text-danger">${errors}</li>`);
+        if (page != null)
+            $("#pi-" + "{{ page }}").addClass("active");
+    </script>
+
+{% endblock %}

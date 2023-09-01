@@ -51,11 +51,41 @@
                                     <a class="dropdown-item" id="myoffers" href="/users/searchOffers">Ver Partes</a>
                                 {% endif %}
                                 {% if session.user != null and session.user != "admin" %}
-                                    <a class="dropdown-item" id="myoffers" href="/users/myoffers">Ver Partes</a>
+                                    <a class="dropdown-item" id="myoffers" href="/users/myoffers">Ver Mis Partes</a>
                                 {% endif %}
                                 <br>
                                 <a class="dropdown-item" id="addoffers" href="/users/add">Añadir parte</a>
                             </div>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="usersDropdown"
+                           role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Control de vehículos</a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            {% if session.user != null and session.user == "admin" %}
+                                <a class="dropdown-item" id="vehicles" href="/users/myvehicles">Ver Vehículos</a>
+                            {% endif %}
+                            {% if session.user != null and session.user != "admin" %}
+                                <a class="dropdown-item" id="vehicles" href="/users/myvehicles">Ver Mis Vehículos</a>
+                            {% endif %}
+                            <br>
+                            <a class="dropdown-item" id="addvehicles" href="/users/addvehicle">Añadir vehículo</a>
+                        </div>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="usersDropdown"
+                           role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Control de maquinaria</a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            {% if session.user != null and session.user == "admin" %}
+                                <a class="dropdown-item" id="machines" href="/users/mymachines">Ver Maquinaria</a>
+                            {% endif %}
+                            {% if session.user != null and session.user != "admin" %}
+                                <a class="dropdown-item" id="machines" href="/users/mymachines">Ver Mi Maquinaria</a>
+                            {% endif %}
+                            <br>
+                            <a class="dropdown-item" id="addmachines" href="/users/addmachine">Añadir máquina</a>
+                        </div>
                     </li>
 
                 </ul>
