@@ -1,3 +1,3 @@
 # app-nemorastur
-Proyecto personal para registrar empleados en una empresa real y realizar sus
-consecuentes partes/registros acerca de sus tareas realizadas
+Personal project to register employees in a real company and carry out their
+consequent parts/records about their tasks performed
