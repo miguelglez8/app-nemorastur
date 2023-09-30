@@ -1,4 +1,4 @@
-const {getConnection} = require("./db");
+const {getConnection, closeConnection} = require("./db");
 module.exports = {
     mongoClient: null,
     app: null,
@@ -10,8 +10,9 @@ module.exports = {
      * Obtiene las ofertas
      */
     getOffers: async function (filter, options) {
+        let client;
         try {
-            const client = await this.mongoClient.connect(this.app.get('connectionStrings'));
+            client = await this.mongoClient.connect(this.app.get('connectionStrings'));
             const database = client.db("entrega2");
             const collectionName = 'offers';
             const offersCollection = database.collection(collectionName);
@@ -19,14 +20,17 @@ module.exports = {
             return offers;
         } catch (error) {
             throw (error);
+        } finally {
+            client.close();
         }
     },
     /**
      * Obtiene una oferta dada una id
      */
     findOffer: async function (filter, options) {
+        let client;
         try {
-            const client = await this.mongoClient.connect(this.app.get('connectionStrings'));
+            client = await this.mongoClient.connect(this.app.get('connectionStrings'));
             const database = client.db("entrega2");
             const collectionName = 'offers';
             const songsCollection = database.collection(collectionName);
@@ -34,15 +38,18 @@ module.exports = {
             return offer;
         } catch (error) {
             throw (error);
+        } finally {
+            client.close();
         }
     },
     /**
      * Obtiene las ofertas con paginación
      */
     getOffersPg: async function (filter, options, page, pageSize=5) {
+        let client;
         try {
             const limit = pageSize;
-            const client = await this.mongoClient.connect(this.app.get('connectionStrings'));
+            client = await this.mongoClient.connect(this.app.get('connectionStrings'));
             const database = client.db("entrega2");
             const collectionName = 'offers';
             const offersCollection = database.collection(collectionName);
@@ -53,15 +60,18 @@ module.exports = {
             return result;
         } catch (error) {
             throw (error);
+        } finally {
+            client.close();
         }
     },
     /**
      * Obtiene las ofertas con paginación
      */
     getMachinesPg: async function (filter, options, page, pageSize=5) {
+        let client;
         try {
             const limit = pageSize;
-            const client = await this.mongoClient.connect(this.app.get('connectionStrings'));
+            client = await this.mongoClient.connect(this.app.get('connectionStrings'));
             const database = client.db("entrega2");
             const collectionName = 'machines';
             const offersCollection = database.collection(collectionName);
@@ -72,15 +82,18 @@ module.exports = {
             return result;
         } catch (error) {
             throw (error);
+        } finally {
+            client.close();
         }
     },
     /**
      * Obtiene las ofertas con paginación
      */
     getVehiclesPg: async function (filter, options, page, pageSize=5) {
+        let client;
         try {
             const limit = pageSize;
-            const client = await this.mongoClient.connect(this.app.get('connectionStrings'));
+            client = await this.mongoClient.connect(this.app.get('connectionStrings'));
             const database = client.db("entrega2");
             const collectionName = 'vehicles';
             const offersCollection = database.collection(collectionName);
@@ -91,6 +104,8 @@ module.exports = {
             return result;
         } catch (error) {
             throw (error);
+        } finally {
+            client.close();
         }
     },
     insertOffer: async function (offer) {
@@ -103,6 +118,8 @@ module.exports = {
             return result.insertedId;
         } catch (error) {
             throw (error);
+        } finally {
+            closeConnection();
         }
     },
     insertMachine: async function (offer) {
@@ -115,6 +132,8 @@ module.exports = {
             return result.insertedId;
         } catch (error) {
             throw (error);
+        } finally {
+            closeConnection();
         }
     },
     insertVehicle: async function (offer) {
@@ -127,6 +146,8 @@ module.exports = {
             return result.insertedId;
         } catch (error) {
             throw (error);
+        } finally {
+            closeConnection();
         }
     },
     /**
@@ -141,14 +162,17 @@ module.exports = {
             return await offersCollection.updateOne(filter, options);
         } catch (error) {
             throw (error);
+        } finally {
+            closeConnection();
         }
     },
     /**
      *
      */
     deleteOffer: async function (filter, options) {
+        let client;
         try {
-            const client = await this.mongoClient.connect(this.app.get('connectionStrings'));
+            client = await this.mongoClient.connect(this.app.get('connectionStrings'));
             const database = client.db("entrega2");
             const collectionName = 'offers';
             const songsCollection = database.collection(collectionName);
@@ -156,11 +180,14 @@ module.exports = {
             return result;
         } catch (error) {
             throw (error);
+        } finally {
+            client.close();
         }
     },
     deleteVehicle: async function (filter, options) {
+        let client;
         try {
-            const client = await this.mongoClient.connect(this.app.get('connectionStrings'));
+            client = await this.mongoClient.connect(this.app.get('connectionStrings'));
             const database = client.db("entrega2");
             const collectionName = 'vehicles';
             const songsCollection = database.collection(collectionName);
@@ -168,11 +195,14 @@ module.exports = {
             return result;
         } catch (error) {
             throw (error);
+        } finally {
+            client.close();
         }
     },
     deleteMachine: async function (filter, options) {
+        let client;
         try {
-            const client = await this.mongoClient.connect(this.app.get('connectionStrings'));
+            client = await this.mongoClient.connect(this.app.get('connectionStrings'));
             const database = client.db("entrega2");
             const collectionName = 'machines';
             const songsCollection = database.collection(collectionName);
@@ -180,6 +210,8 @@ module.exports = {
             return result;
         } catch (error) {
             throw (error);
+        } finally {
+            client.close();
         }
     }
 };
