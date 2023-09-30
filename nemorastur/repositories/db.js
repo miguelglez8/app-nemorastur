@@ -6,6 +6,12 @@ module.exports = {
         connection= await mongoClient.connect(connectionStrings);
         console.log("Connected to MongoDB");
         return connection;
+    },
+    closeConnection: function () {
+        if(connection) {
+            connection.close();
+            connection = null;
+        }
     }
 
 }
