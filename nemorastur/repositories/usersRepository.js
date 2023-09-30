@@ -1,4 +1,4 @@
-const {getConnection} = require("./db");
+const {getConnection, closeConnection} = require("./db");
 module.exports = {
     mongoClient: null,
     app: null,
@@ -24,6 +24,8 @@ module.exports = {
             return user;
         } catch (error) {
             throw (error);
+        } finally {
+            closeConnection();
         }
     },
 
@@ -46,6 +48,8 @@ module.exports = {
             return {users: users, total: usersCollectionCount };
         } catch (error) {
             throw (error);
+        } finally {
+            closeConnection();
         }
     },
 
@@ -60,6 +64,8 @@ module.exports = {
             return {users: users };
         } catch (error) {
             throw (error);
+        } finally {
+            closeConnection();
         }
     },
 
@@ -78,6 +84,8 @@ module.exports = {
             return result.insertedId;
         } catch (error) {
             throw (error);
+        } finally {
+            closeConnection();
         }
     },
 
@@ -91,6 +99,8 @@ module.exports = {
             return result;
         } catch (error) {
             throw (error);
+        } finally {
+            closeConnection();
         }
     },
 
@@ -109,6 +119,8 @@ module.exports = {
             return await usersCollection.updateOne(filter, options);
         } catch (error) {
             throw (error);
+        } finally {
+            closeConnection();
         }
     }
 
