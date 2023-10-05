@@ -27,13 +27,7 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-java</artifactId>
-            <scope>system</scope>
-            <version>3.141.59</version>
-            <systemPath>${basedir}/sdi2223-entrega2-test-13/src/lib/selenium-server-standalone-3.141.59.jar</systemPath>
-        </dependency>
+
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>

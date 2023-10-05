@@ -70,23 +70,23 @@ module.exports = function (app, usersRepository, offersRepository) {
             }
 
             for (const listElement of list) {
-                deleteUser(listElement, res);
+                deleteUser(listElement, res, page);
             }
         }
-
-        res.redirect("/users/list?page=" + page);
     });
 
     /**
      * Funcion que borra un usuario
      */
-    async function deleteUser(userId, res) {
+    async function deleteUser(userId, res, page) {
         let userFound = await usersRepository.findUser({_id: new ObjectId(userId)}, {});
 
         usersRepository.deleteUser({_id: new ObjectId(userId)}, {}).then(async result => {
             await offersRepository.deleteOffer({employee: userFound.username}, {})
+            res.redirect("/users/list?page=" + page);
             res.end();
         })
+
     }
 
     /**
