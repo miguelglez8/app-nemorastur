@@ -143,50 +143,84 @@ module.exports = function (app, usersRepository, offersRepository) {
             vehicles: 0,
             machines: 0,
             rol: "STANDARD",
+        };
+
+        let errors = await validateUser(user, req.body.password, req.body.passwordConfirm);
+
+        if (errors.length > 0) {
+            let queryParams = errors.map(error => `message=${encodeURIComponent(error)}&messageType=alert-danger`).join('&');
+            res.redirect(`/users/signup?${queryParams}&username=${encodeURIComponent(user.username)}&name=${encodeURIComponent(user.name)}&surname=${encodeURIComponent(user.surname)}`);
+            return;
         }
 
-        await validateUser(user, req.body.password, req.body.passwordConfirm).then(result => {
-            if (result.length > 0) {
-                let url = ""
-                for (error in result) {
-                    url += "&message=" + result[error] + "&messageType=alert-danger "
-                }
-                res.redirect("/users/signup?" + url);
-                return
-            }
-            usersRepository.insertUser(user).then(() => {
-                res.redirect("/users/login?message=Nuevo usuario registrado&messageType=alert-info");
-            }).catch(() => {
-                res.redirect("/users/signup?message=Se ha producido un error al registrar usuario&messageType=alert-danger");
-            });
-        });
-    })
+        try {
+            await usersRepository.insertUser(user);
+            res.redirect("/users/login?message=Nuevo usuario registrado&messageType=alert-info");
+        } catch (error) {
+            res.redirect("/users/signup?message=Se ha producido un error al registrar usuario&messageType=alert-danger");
+        }
+    });
+
 
     async function validateUser(user, originalPassword, confirmPassword) {
         let errors = [];
-        if (user.username == null || user.username == "") {
+
+        // Validaciones básicas de campos
+        if (!user.username || user.username.trim() === "") {
             errors.push("El nombre de usuario es obligatorio");
         }
-        if (user.password == null || user.password == "") {
+        if (!user.password || user.password.trim() === "") {
             errors.push("El password es obligatorio");
         }
-        if (user.name == null || user.name == "") {
+        if (!user.name || user.name.trim() === "") {
             errors.push("El nombre es obligatorio");
         }
-        if (user.surname == null || user.surname == "") {
+        if (!user.surname || user.surname.trim() === "") {
             errors.push("El apellido es obligatorio");
         }
-        if (originalPassword != confirmPassword) {
+        if (originalPassword !== confirmPassword) {
             errors.push("Las contraseñas no coinciden");
         }
 
+        // Validaciones de la contraseña
+        if (!isPasswordComplex(originalPassword)) {
+            errors.push("La contraseña debe tener al menos 8 caracteres, incluir una mayúscula, una minúscula, un número y un carácter especial");
+        }
+
+        // Verificación de existencia del nombre de usuario
         let userFound = await usersRepository.findUser({username: user.username}, {});
 
-        if (userFound != null) {
+        if (userFound) {
             errors.push("El nombre de usuario ya existe, por favor introduce uno nuevo");
         }
 
         return errors;
+    }
+
+    function isPasswordComplex(password) {
+        const minLength = 8;
+        const uppercase = /[A-Z]/;
+        const lowercase = /[a-z]/;
+        const number = /[0-9]/;
+        const specialChar = /[!@#$%^&*(),.?":{}|<>]/;
+
+        if (password.length < minLength) {
+            return false;
+        }
+        if (!uppercase.test(password)) {
+            return false;
+        }
+        if (!lowercase.test(password)) {
+            return false;
+        }
+        if (!number.test(password)) {
+            return false;
+        }
+        if (!specialChar.test(password)) {
+            return false;
+        }
+
+        return true;
     }
 
     app.get('/users/logout', function (req, res) {

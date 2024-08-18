@@ -1,8 +1,9 @@
 const {ObjectId} = require("mongodb");
 const {response} = require("express");
 const moment = require("moment");
-const geoip = require("geoip-lite");
-const axios = require('axios');
+const multer = require('multer');
+const { uploadToFirebase } = require('../app');
+const upload = multer({ storage: multer.memoryStorage() });
 
 module.exports = function (app, usersRepository, offersRepository) {
 
@@ -26,7 +27,6 @@ module.exports = function (app, usersRepository, offersRepository) {
         if (typeof req.query.page === "undefined" || req.query.page === null || req.query.page === "0") {
             page = 1;
         }
-        // buscamos las ofertas por paginación
         offersRepository.getOffersPg(filter, options, page).then(offers => {
             let lastPage = offers.total / 5;
             if (offers.total % 5 > 0) {
@@ -65,7 +65,6 @@ module.exports = function (app, usersRepository, offersRepository) {
         if (typeof req.query.page === "undefined" || req.query.page === null || req.query.page === "0") {
             page = 1;
         }
-        // buscamos las ofertas por paginación
         offersRepository.getMachinesPg(filter, options, page).then(offers => {
             let lastPage = offers.total / 5;
             if (offers.total % 5 > 0) {
@@ -104,7 +103,6 @@ module.exports = function (app, usersRepository, offersRepository) {
         if (typeof req.query.page === "undefined" || req.query.page === null || req.query.page === "0") {
             page = 1;
         }
-        // buscamos las ofertas por paginación
         offersRepository.getVehiclesPg(filter, options, page).then(offers => {
             let lastPage = offers.total / 5;
             if (offers.total % 5 > 0) {
@@ -153,6 +151,71 @@ module.exports = function (app, usersRepository, offersRepository) {
     });
 
     /**
+     * Método get para la vista de la oferta
+     */
+    app.get('/users/editar/:id/:page', async function (req, res) {
+        let offerId = new ObjectId(req.params.id);
+        let page = parseInt(req.params.page);
+        if (typeof req.params.page === "undefined" || req.params.page === null || req.params.page === "0") {
+            page = 1;
+        }
+
+        try {
+            let offer = await offersRepository.findOffer({_id: offerId}, {});
+
+            if (!offer) {
+                res.redirect("/users/searchOffers?message=No se ha encontrado la oferta&messageType=alert-danger");
+                return;
+            }
+
+            res.render("offers/editoffer.twig", {
+                offer: offer,
+                session: req.session,
+                page: page
+            });
+        } catch (error) {
+            res.status(500).send("Error al buscar la oferta: " + error.message);
+        }
+    });
+
+    /**
+     * Método post para actualizar la oferta
+     */
+    app.post('/users/editar/:id', async function (req, res) {
+        let offerId = new ObjectId(req.params.id);
+
+        const fecha1 = moment(req.body.dateS, 'HH:mm');
+        const fecha2 = moment(req.body.dateF, 'HH:mm');
+        const diferencia = moment.duration(fecha2.diff(fecha1));
+        const distanciaHoras = diferencia.asHours().toFixed(2);
+
+        let updatedOffer = {
+            title: req.body.title,
+            date: req.body.date,
+            client: req.body.client,
+            place: req.body.lug,
+            dateS: req.body.dateS,
+            dateF: req.body.dateF,
+            duration: distanciaHoras,
+            material: req.body.material,
+            observations: req.body.observations
+        };
+
+        try {
+            await offersRepository.updateOffer({_id: offerId}, {$set: updatedOffer});
+
+            const page = req.body.page || 1;
+
+            const redirectUrl = `/users/searchOffers?message=Parte actualizado con éxito&messageType=alert-info&page=${page}`;
+
+            res.redirect(redirectUrl);
+        } catch (error) {
+            res.status(500).send("Error al actualizar la oferta: " + error.message);
+        }
+    });
+
+
+    /**
      * Método get para la vista del formulario de añadir maquinaria
      */
     app.get('/users/addmachine', function (req, res) {
@@ -167,33 +230,34 @@ module.exports = function (app, usersRepository, offersRepository) {
     /**
      * Añade oferta nueva
      */
-    app.post('/users/add', async function (req, res) {
-        const fecha1 = moment(req.body.dateS, 'HH:mm');
-        const fecha2 = moment(req.body.dateF, 'HH:mm');
-        const diferencia = moment.duration(fecha2.diff(fecha1));
-        const distanciaHoras = diferencia.asHours().toFixed(2);
-        let tareas = ["Segar el césped y desorillar", "Limpieza y barrido de viales", "Mantenimiento de terrarios",
-            "Poda de árboles y arbustos"]
-        let rees = []
-        let e1 = req.body.task1
-        let e2 = req.body.task2
-        let e3 = req.body.task3
-        let e4 = req.body.task4
+    app.post('/users/add', upload.array('images', 5), async function (req, res) {
+        try {
+            const fecha1 = moment(req.body.dateS, 'HH:mm');
+            const fecha2 = moment(req.body.dateF, 'HH:mm');
+            const diferencia = moment.duration(fecha2.diff(fecha1));
+            const distanciaHoras = diferencia.asHours().toFixed(2);
+            let tareas = ["Segar el césped y desorillar", "Limpieza y barrido de viales", "Mantenimiento de terrarios", "Poda de árboles y arbustos"];
+            let rees = [];
+            let e1 = req.body.task1;
+            let e2 = req.body.task2;
+            let e3 = req.body.task3;
+            let e4 = req.body.task4;
 
-        if (e1 != undefined) {
-            rees.push(tareas[0])
-        }
-        if (e2 != undefined) {
-            rees.push(tareas[1])
-        }
-        if (e3 != undefined) {
-            rees.push(tareas[2])
-        }
-        if (e4 != undefined) {
-            rees.push(tareas[3])
-        }
-        usersRepository.updateUser({username: req.session.user}, {$inc: {partes: 1}}).then(async result => {
+            if (e1 != undefined) rees.push(tareas[0]);
+            if (e2 != undefined) rees.push(tareas[1]);
+            if (e3 != undefined) rees.push(tareas[2]);
+            if (e4 != undefined) rees.push(tareas[3]);
+
+            const offerId = new ObjectId();
+
+            const imageUrls = await Promise.all(req.files.map(async (file) => {
+                const filename = `${file.originalname}`;
+                const url = await uploadToFirebase(file.buffer, filename, req.session.user, offerId.toString());
+                return url;
+            }));
+
             let offer = {
+                _id: offerId,
                 title: req.body.title,
                 date: req.body.date,
                 client: req.body.client,
@@ -205,18 +269,19 @@ module.exports = function (app, usersRepository, offersRepository) {
                 employee: req.session.user,
                 tasks: rees,
                 material: req.body.material,
-                euros: req.body.cash,
                 observations: req.body.observations,
-                state: "PENDIENTE DE FACTURAR"
-            }
+                state: "PENDIENTE DE FACTURAR",
+                images: imageUrls
+            };
+
             await validateOffer(offer).then(result => {
                 if (result.length > 0) {
-                    let url = ""
-                    for (error in result) {
-                        url += "&message=" + result[error] + "&messageType=alert-danger "
+                    let url = "";
+                    for (const error of result) {
+                        url += "&message=" + error + "&messageType=alert-danger ";
                     }
                     res.redirect("/users/add?" + url);
-                    return
+                    return;
                 }
                 offersRepository.insertOffer(offer).then(() => {
                     if (req.session.user == "admin") {
@@ -228,8 +293,12 @@ module.exports = function (app, usersRepository, offersRepository) {
                     res.redirect("/users/myoffers?message=Se ha producido un error al registrar un nuevo parte&messageType=alert-danger");
                 });
             });
-        });
+        } catch (error) {
+            console.error("Error al subir las imágenes o guardar la oferta:", error);
+            res.redirect("/users/add?message=Se ha producido un error al registrar un nuevo parte&messageType=alert-danger");
+        }
     });
+
 
     /**
      * Añade vehiculo nuevo
@@ -272,11 +341,6 @@ module.exports = function (app, usersRepository, offersRepository) {
      * Añade maquina nueva
      */
     app.post('/users/addmachine', async function (req, res) {
-        console.log(req.body.agua)
-        console.log(req.body.aceite)
-        console.log(req.body.frenos)
-        console.log(req.body.neumaticos)
-
         usersRepository.updateUser({username: req.session.user}, {$inc: {machines: 1}}).then(async result => {
             let offer = {
                 marca: req.body.marca,
@@ -424,50 +488,60 @@ module.exports = function (app, usersRepository, offersRepository) {
     })
 
     /**
-     * Busca las ofertas por nombre del cliente
+     * Busca las ofertas por múltiples criterios
      */
     app.get('/users/searchOffers', function (req, res) {
         let filter = {};
-        // establecemos el filtro
-        if (req.query.search != null && typeof (req.query.search) != "undefined" && req.query.search != "") {
-            filter = {"client": {$regex: new RegExp(".*" + req.query.search + ".*", "i")}}
+        let criteria = req.query.criteria || 'client';
+
+        switch (criteria) {
+            case 'date':
+                if (req.query.search) {
+                    filter.date = { $regex: new RegExp(req.query.search, "i") };
+                }
+                break;
+            case 'state':
+                if (req.query.search) {
+                    filter.state = req.query.search;
+                }
+                break;
+            case 'employee':
+                if (req.query.search) {
+                    filter.employee = req.query.search;
+                }
+                break;
+            case 'client':
+            default:
+                if (req.query.search) {
+                    filter.client = { $regex: new RegExp(req.query.search, "i") };
+                }
+                break;
         }
-        // establecemos la página
-        let page = parseInt(req.query.page); // Es String !!!
-        if (typeof req.query.page === "undefined" || req.query.page === null || req.query.page === "0") { // Puede no venir el param
-            page = 1;
-        }
-        // buscamos las oferta con paginación
-        let pageSize = req.query.pageSize ? req.query.pageSize : 5;
-        let max = parseInt(pageSize)
-        offersRepository.getOffersPg(filter, {}, page, max).then(result => {
-            // buscamos el usuario
-            usersRepository.findUser({username: req.session.user}, {}).then(user => {
-                let lastPage = result.total / max;
-                if (result.total % max > 0) { // Sobran decimales
-                    lastPage = lastPage + 1;
+
+        let page = parseInt(req.query.page) || 1;
+        let pageSize = parseInt(req.query.pageSize) || 5;
+
+        offersRepository.getOffersPg(filter, {}, page, pageSize).then(result => {
+            let lastPage = Math.ceil(result.total / pageSize);
+            let pages = [];
+            for (let i = page - 2; i <= page + 2; i++) {
+                if (i > 0 && i <= lastPage) {
+                    pages.push(i);
                 }
-                let pages = []; // paginas mostrar
-                for (let i = page - 2; i <= page + 2; i++) {
-                    if (i > 0 && i <= lastPage) {
-                        pages.push(i);
-                    }
-                }
-                let response = {
-                    offers: result.offers,
-                    pages: pages,
-                    currentPage: page,
-                    session: req.session,
-                    search: req.query.search,
-                    pageSize: max
-                }
-                // volvemos a la vista de listar las ofertas
-                res.render("offers/myoffers.twig", response);
-            }).catch(error => {
-                res.send("Se ha producido un error al encontrar el usuario en sesión: " + error)
-            });
+            }
+            let response = {
+                offers: result.offers,
+                pages: pages,
+                currentPage: page,
+                session: req.session,
+                search: req.query.search,
+                criteria: criteria,
+                pageSize: pageSize,
+                lastPage: lastPage
+            };
+            res.render("offers/myoffers.twig", response);
         }).catch(error => {
-            res.send("Se ha producido un error al buscar los partes " + error)
+            res.status(500).send("Se ha producido un error al buscar las ofertas: " + error.message);
         });
     });
 
@@ -498,16 +572,13 @@ module.exports = function (app, usersRepository, offersRepository) {
             errors.push("El material es obligatorio");
         }
 
-        // Obtener las horas a comparar (en formato de 24 horas)
         var hora1 = offer.dateS;
         var hora2 = offer.dateF;
 
-        // Crear objetos Date con la fecha de hoy y las horas a comparar
         var fechaHoy = new Date();
         var fechaHora1 = new Date(fechaHoy.toDateString() + ' ' + hora1);
         var fechaHora2 = new Date(fechaHoy.toDateString() + ' ' + hora2);
 
-        // Comparar si la fecha/hora 1 es posterior a la fecha/hora 2
         if (fechaHora1 > fechaHora2) {
             errors.push("La hora de comienzo no puede ser posterior a la de final");
         }

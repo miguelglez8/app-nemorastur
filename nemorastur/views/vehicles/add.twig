@@ -121,12 +121,4 @@
         </div>
     </form>
 
-    <script>
-        navigator.geolocation.watchPosition(async function (position) {
-            const { latitude, longitude } = position.coords;
-            await fetch("https://geocode.maps.co/reverse?lat=" + Number(latitude) + "&lon=" + Number(longitude)).then(lugar => {
-                return lugar.json();}).then(p => $("#lug")
-                .val(p.address.town + ", " + p.address.city + ", " + p.address.state))
-        });
-    </script>
 {% endblock %}

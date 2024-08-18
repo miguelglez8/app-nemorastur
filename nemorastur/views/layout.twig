@@ -2,9 +2,30 @@
 <html>
 <head>
     <title>{{ title }}</title>
+    <link rel="icon" href="/public/logo.png" type="image/png">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+        .navbar-brand img {
+            height: 80px; /* Ajusta la altura de la imagen del logo en la barra de navegación */
+            width: auto; /* Mantiene la proporción de la imagen */
+        }
+        .signature-box {
+            border: 2px solid #000; /* Borde negro */
+            border-radius: 4px;
+            height: 100px; /* Ajusta la altura de la caja */
+            background-color: #fff;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .signature-box img {
+            max-height: 80px; /* Ajusta la altura máxima de la imagen */
+            height: auto; /* Mantiene la proporción de la imagen */
+        }
+    </style>
 </head>
 
 <body>
@@ -13,55 +34,48 @@
 <nav class="navbar navbar-inverse">
     <div class="container-fluid">
         <div class="navbar-header">
-
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-
-
+            <a class="navbar-brand" href="https://www.nemorastur.com/">
+                <img src="/images/logo.png" alt="logo"/>
+            </a>
         </div>
 
         <div class="collapse navbar-collapse" id="myNavbar">
-
             {% if session.user != undefined %}
-
                 <ul class="nav navbar-nav">
-                    <li>
-                        <img src="/images/logo.png" alt="logo"/>
-                    </li>
                     <li class="nav-item dropdown active">
                         {% if session.user != null and session.user == "admin" %}
                             <a class="nav-link dropdown-toggle" href="#" id="usersDropdown"
                                role="button" data-toggle="dropdown" aria-haspopup="true"
                                aria-expanded="false">Empleados
                             </a>
-                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <div class="dropdown-menu" aria-labelledby="usersDropdown">
                                 <a class="dropdown-item" id="adminList" href="/users/list">Ver Empleados</a>
                             </div>
                         {% endif %}
                     </li>
-
                     <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="usersDropdown"
-                               role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Partes</a>
-                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                {% if session.user != null and session.user == "admin" %}
-                                    <a class="dropdown-item" id="myoffers" href="/users/searchOffers">Ver Partes</a>
-                                {% endif %}
-                                {% if session.user != null and session.user != "admin" %}
-                                    <a class="dropdown-item" id="myoffers" href="/users/myoffers">Ver Mis Partes</a>
-                                {% endif %}
-                                <br>
-                                <a class="dropdown-item" id="addoffers" href="/users/add">Añadir parte</a>
-                            </div>
+                        <a class="nav-link dropdown-toggle" href="#" id="partsDropdown"
+                           role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Partes</a>
+                        <div class="dropdown-menu" aria-labelledby="partsDropdown">
+                            {% if session.user != null and session.user == "admin" %}
+                                <a class="dropdown-item" id="myoffers" href="/users/searchOffers">Ver Partes</a>
+                            {% endif %}
+                            {% if session.user != null and session.user != "admin" %}
+                                <a class="dropdown-item" id="myoffers" href="/users/myoffers">Ver Mis Partes</a>
+                            {% endif %}
+                            <br>
+                            <a class="dropdown-item" id="addoffers" href="/users/add">Añadir parte</a>
+                        </div>
                     </li>
-
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="usersDropdown"
+                        <a class="nav-link dropdown-toggle" href="#" id="vehiclesDropdown"
                            role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Control de vehículos</a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <div class="dropdown-menu" aria-labelledby="vehiclesDropdown">
                             {% if session.user != null and session.user == "admin" %}
                                 <a class="dropdown-item" id="vehicles" href="/users/myvehicles">Ver Vehículos</a>
                             {% endif %}
@@ -72,11 +86,10 @@
                             <a class="dropdown-item" id="addvehicles" href="/users/addvehicle">Añadir vehículo</a>
                         </div>
                     </li>
-
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="usersDropdown"
+                        <a class="nav-link dropdown-toggle" href="#" id="machinesDropdown"
                            role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Control de maquinaria</a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <div class="dropdown-menu" aria-labelledby="machinesDropdown">
                             {% if session.user != null and session.user == "admin" %}
                                 <a class="dropdown-item" id="machines" href="/users/mymachines">Ver Maquinaria</a>
                             {% endif %}
@@ -87,17 +100,16 @@
                             <a class="dropdown-item" id="addmachines" href="/users/addmachine">Añadir máquina</a>
                         </div>
                     </li>
-
                 </ul>
             {% endif %}
 
             <ul class="nav navbar-nav navbar-right">
                 {% if session.user != undefined %}
                     <li id="ubi"></li>
-                    <li id="email"><a>Nombre de usuario: {{session.user}}</a></li>
-                    <li><a href="/users/logout"><span class="glyphicon glyphicon-log-in"></span>Cerrar sesión</a></li>
+                    <li id="email"><a>Nombre de usuario: {{ session.user }}</a></li>
+                    <li><a href="/users/logout"><span class="glyphicon glyphicon-log-in"></span> Cerrar sesión</a></li>
                 {% else %}
-                    <li><a href="/users/signup"><span class="glyphicon glyphicon-user"></span>Regístrate</a></li>
+                    <li><a href="/users/signup"><span class="glyphicon glyphicon-user"></span> Regístrate</a></li>
                     <li><a href="/users/login"><span class="glyphicon glyphicon-log-in"></span> Identifícate</a></li>
                 {% endif %}
             </ul>
@@ -117,19 +129,11 @@
             $(".container")
                 .append("<div class='alert " + messageType + "'>" + message + " </div>");
         }
-
-        navigator.geolocation.watchPosition(async function (position) {
-            const { latitude, longitude } = position.coords;
-            await fetch("https://geocode.maps.co/reverse?lat=" + Number(latitude) + "&lon=" + Number(longitude)).then(lugar => {
-                    return lugar.json();}).then(p => $("#ubi")
-                .html("<a><span class='glyphicon glyphicon-map-marker'></span>Ubicación: "+ p.address.town + ", " + p.address.city + ", " + p.address.state + "</a>"))
-        });
-
     </script>
     <img sizes="100px" src="/images/nemorastur-logo-top.png" alt="imagen de nemorastur" width="300" height="auto">
 
     {% block body %}{% endblock %}
-
 </div>
+
 </body>
 </html>

@@ -2,7 +2,7 @@
 {% block title %} Nemorastur {% endblock %}
 {% block body %}
     <h2>Añadir parte</h2>
-    <form class="form-horizontal" method="post" action="/users/add">
+    <form class="form-horizontal" method="post" action="/users/add" enctype="multipart/form-data">
         <div class="form-group">
             <label class="control-label col-sm-2" for="title">Título:</label>
             <div class="col-sm-10">
@@ -25,10 +25,10 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-sm-2" for="lug">Ubicación (no editar):</label>
+            <label class="control-label col-sm-2" for="lug">Ubicación:</label>
             <div class="col-sm-10">
                 <input id="lug" type="text" class="form-control" name="lug"
-                       placeholder="" required="true" readonly/>
+                       placeholder="Moreda de Aller" required="true"/>
             </div>
         </div>
         <div class="form-group">
@@ -73,17 +73,16 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-sm-2" for="cash">Presupuesto (aproximado):</label>
-            <div class="col-sm-10">
-                <input id="detail" type="number" class="form-control" name="cash"
-                       placeholder="120€" required="true" />
-            </div>
-        </div>
-        <div class="form-group">
             <label class="control-label col-sm-2" for="observations">Observaciones:</label>
             <div class="col-sm-10">
                 <input id="detail" type="text" class="form-control" name="observations"
                        placeholder="Introduza las observaciones oportunas..." required="true" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="images">Adjuntar imágenes (máx. 5):</label>
+            <div class="col-sm-10">
+                <input id="images" type="file" class="form-control" name="images" multiple accept="image/*" />
             </div>
         </div>
         <div class="form-group">
@@ -93,12 +92,4 @@
         </div>
     </form>
 
-    <script>
-        navigator.geolocation.watchPosition(async function (position) {
-            const { latitude, longitude } = position.coords;
-            await fetch("https://geocode.maps.co/reverse?lat=" + Number(latitude) + "&lon=" + Number(longitude)).then(lugar => {
-                return lugar.json();}).then(p => $("#lug")
-                .val(p.address.town + ", " + p.address.city + ", " + p.address.state))
-        });
-    </script>
 {% endblock %}

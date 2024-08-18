@@ -4,6 +4,10 @@ const serverless = require('serverless-http')
 let path = require('path');
 const fs = require('fs');
 const requestIp = require('request-ip');
+const multer = require('multer');
+const moment = require('moment');
+const admin = require('firebase-admin');
+const { v4: uuidv4 } = require('uuid');
 
 let app = express();
 
@@ -59,6 +63,40 @@ app.use(expressSession({
     saveUninitialized: true
 }));
 
+const serviceAccount = require('./service.json');
+
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    storageBucket: 'nemorastur.appspot.com'
+});
+
+const bucket = admin.storage().bucket();
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
+async function uploadToFirebase(fileBuffer, filename, clientName, offerId) {
+    try {
+        const folderPath = `nemorastur/${clientName}/${offerId}/`;
+        const file = bucket.file(`${folderPath}${filename}`);
+
+        await file.save(fileBuffer, {
+            metadata: { contentType: 'image/*' },
+            public: true,
+        });
+
+        return `https://storage.googleapis.com/${bucket.name}/${file.name}`;
+    } catch (error) {
+        console.error("Error al subir el archivo a Firebase Storage:", error);
+        throw error;
+    }
+}
+
+module.exports = {
+    upload,
+    uploadToFirebase
+};
+
 /**
  * Los repositorios del sistema
  */
@@ -78,6 +116,7 @@ let userAdminRouter = require('./routes/userAdminRouter');
 app.use("/offers/add",userSessionRouter);
 app.use("/offers/list",userSessionRouter);
 app.use("/offers/myoffers",userSessionRouter);
+app.use("/offers/editoffer",userSessionRouter);
 app.use("/offers/*", userSessionRouter);
 app.use("/users/admin/list", userAdminRouter);
 app.use("/users/delete", userAdminRouter);

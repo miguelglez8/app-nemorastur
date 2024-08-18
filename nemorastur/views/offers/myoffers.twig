@@ -2,20 +2,25 @@
 {% block title %} Ver Partes – Nemorastur {% endblock %}
 {% block body %}
     {% if session.user != null and session.user == "admin" %}
-    <div id="custom-search-input ">
-        <form method="get" action="/users/searchOffers">
-            <div class="input-group col-xs-8 col-sm-6 col-md-4 col-lg-5 pull-right">
-                <input id="search" type="text" class="search-query form-control"
-                       placeholder="" name="search" value={{ search }}>
-                <span class="input-group-btn">
-                <button class="btn" type="submit">
-                <span class="glyphicon glyphicon-search"></span>
-                </button>
+        <div id="custom-search-input">
+            <form method="get" action="/users/searchOffers">
+                <div class="input-group col-xs-8 col-sm-6 col-md-4 col-lg-5 pull-right">
+                    <select name="criteria" class="form-control">
+                        <option value="client" {% if criteria == 'client' %}selected{% endif %}>Nombre del cliente</option>
+                        <option value="date" {% if criteria == 'date' %}selected{% endif %}>Fecha</option>
+                        <option value="state" {% if criteria == 'state' %}selected{% endif %}>Estado de facturación</option>
+                        <option value="employee" {% if criteria == 'employee' %}selected{% endif %}>Empleado que realizó el trabajo</option>
+                    </select>
+                    <input id="search" type="text" class="search-query form-control" placeholder="Buscar" name="search" value="{{ search }}">
+                    <span class="input-group-btn">
+                    <button class="btn" type="submit">
+                        <span class="glyphicon glyphicon-search"></span>
+                    </button>
                 </span>
-            </div>
-        </form>
-    </div>
-    <h1>Busca los partes por nombre del cliente:</h1>
+                </div>
+            </form>
+        </div>
+        <h1>Busca los partes:</h1>
     {% endif %}
 
     {% if session.user != null and session.user != "admin" %}
@@ -40,11 +45,16 @@
                 <th>Obra nueva/Mantenimiento</th>
                 <th>Tareas que se realizan</th>
                 <th>Material empleado</th>
-                <th>Presupuesto en €</th>
                 <th>Observaciones</th>
                 <th>Estado de facturación</th>
                 <th>¿Desea eliminarlo?</th>
-                <th>¿Desea cambiar el estado de facturación?</th>
+                {% if session.user != null and session.user == "admin" %}
+                    <th>¿Desea cambiar el estado de facturación?</th>
+                {% endif %}
+                {% if session.user != null and session.user == "admin" %}
+                    <th>¿Desea acceder a sus datos?</th>
+                {% endif %}
+                <th>¿Desea descargar las imágenes?</th>
                 <th class="col-md-1"></th>
             </tr>
             </thead>
@@ -62,7 +72,6 @@
                     <td>{{ offer.type }}</td>
                     <td>{{ offer.tasks }}</td>
                     <td>{{ offer.material }}</td>
-                    <td>{{ offer.euros }}</td>
                     <td>{{ offer.observations }}</td>
                     <td>{{ offer.state }}</td>
                     <td><a href="/users/elimina/{{ offer._id }}/{{ currentPage }}">Eliminar</a> <br>
@@ -71,6 +80,23 @@
                         {% endif %}
                         {% if session.user != null and session.user == "admin" and offer.state == "FACTURADO" %}
                             <td><a href="/users/mover/{{ offer._id }}/{{ currentPage }}">Mover a pendiente</a> <br>
+                        {% endif %}
+                        {% if session.user != null and session.user == "admin" %}
+                            <td><a href="/users/editar/{{ offer._id }}/{{ currentPage }}">Acceder</a> </td>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if offer.images.length > 0 %}
+                            <div>
+                                <strong>Imágenes:</strong>
+                                <ul>
+                                    {% for imageUrl in offer.images %}
+                                        <li><a href="{{ imageUrl }}" download>Descargar imagen</a></li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% else %}
+                            No hay imágenes disponibles
                         {% endif %}
                     </td>
                 </tr>
@@ -81,30 +107,46 @@
 
     <div class="row text-center">
         <ul class="pagination">
+            <!-- Enlace a la primera página -->
+            {% if currentPage > 1 %}
+                <li class="page-item">
+                    <a class="page-link" href="/users/{{ session.user == 'admin' ? 'searchOffers' : 'myoffers' }}?page=1&search={{ search }}&criteria={{ criteria }}">Primera</a>
+                </li>
+            {% endif %}
+
+            <!-- Enlace a la página anterior -->
+            {% if currentPage > 1 %}
+                <li class="page-item">
+                    <a class="page-link" href="/users/{{ session.user == 'admin' ? 'searchOffers' : 'myoffers' }}?page={{ currentPage - 1 }}&search={{ search }}&criteria={{ criteria }}">Anterior</a>
+                </li>
+            {% endif %}
+
+            <!-- Enlaces a las páginas cercanas -->
             {% for page in pages %}
                 <li class="page-item" id="pi-{{ page }}">
-                    {% if session.user != null and session.user == "admin" %}
-                        {% if search %}
-                            <a class="page-link" href="/users/searchOffers?page={{ page }}&search={{ search }}">{{ page }}</a>
-                        {% else %}
-                            <a class="page-link" href="/users/searchOffers?page={{ page }}">{{ page }}</a>
-                        {% endif %}
-                    {% endif %}
-
-                    {% if session.user != null and session.user != "admin" %}
-                        {% if search %}
-                            <a class="page-link" href="/users/myoffers?page={{ page }}&search={{ search }}">{{ page }}</a>
-                        {% else %}
-                            <a class="page-link" href="/users/myoffers?page={{ page }}">{{ page }}</a>
-                        {% endif %}
-                    {% endif %}
+                    <a class="page-link" href="/users/{{ session.user == 'admin' ? 'searchOffers' : 'myoffers' }}?page={{ page }}&search={{ search }}&criteria={{ criteria }}">{{ page }}</a>
                 </li>
             {% endfor %}
-            <script>
-                $("#pi-" + "{{ currentPage }}").addClass("active");
-            </script>
+
+            <!-- Enlace a la página siguiente -->
+            {% if currentPage < lastPage %}
+                <li class="page-item">
+                    <a class="page-link" href="/users/{{ session.user == 'admin' ? 'searchOffers' : 'myoffers' }}?page={{ currentPage + 1 }}&search={{ search }}&criteria={{ criteria }}">Siguiente</a>
+                </li>
+            {% endif %}
+
+            <!-- Enlace a la última página -->
+            {% if currentPage < lastPage %}
+                <li class="page-item">
+                    <a class="page-link" href="/users/{{ session.user == 'admin' ? 'searchOffers' : 'myoffers' }}?page={{ lastPage }}&search={{ search }}&criteria={{ criteria }}">Última</a>
+                </li>
+            {% endif %}
         </ul>
     </div>
+
+    <script>
+        $("#pi-" + "{{ currentPage }}").addClass("active");
+    </script>
 
     <script>
         let urlParams = new URLSearchParams(window.location.search)

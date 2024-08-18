@@ -1,0 +1,94 @@
+{% extends "layout.twig" %}
+
+{% block title %}Editar Oferta{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h2>Detalle del parte de {{ offer.employee }} en {{ offer.type }} (ESTADO: {{ offer.state }}):</h2>
+
+        <form action="/users/editar/{{ offer._id }}" method="post">
+            <input type="hidden" name="page" value="{{ page }}">
+
+            <div class="form-group">
+                <label for="title">Título</label>
+                <input type="text" class="form-control" id="title" name="title" value="{{ offer.title }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="date">Fecha</label>
+                <input type="date" class="form-control" id="date" name="date" value="{{ offer.date }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="client">Cliente</label>
+                <input type="text" class="form-control" id="client" name="client" value="{{ offer.client }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="lug">Lugar</label>
+                <input type="text" class="form-control" id="lug" name="lug" value="{{ offer.place }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="dateS">Hora de inicio</label>
+                <input type="time" class="form-control" id="dateS" name="dateS" value="{{ offer.dateS }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="dateF">Hora de finalización</label>
+                <input type="time" class="form-control" id="dateF" name="dateF" value="{{ offer.dateF }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="material">Material</label>
+                <input type="text" class="form-control" id="material" name="material" value="{{ offer.material }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="observations">Observaciones</label>
+                <textarea class="form-control" id="observations" name="observations" rows="3">{{ offer.observations }}</textarea>
+            </div>
+
+            <div class="form-group mt-4">
+                <div class="row text-center">
+                    <div class="col-md-6">
+                        <label>POR LA EMPRESA</label>
+                        <div class="signature-box">
+                            <img src="/images/logo.png" alt="Logo de la Empresa" class="img-fluid" style="max-height: 80px;">
+                        </div>
+                        <label>NEMORASTUR</label>
+                    </div>
+                    <div class="col-md-6">
+                        <label>EL CLIENTE</label>
+                        <div class="signature-box">
+                        </div>
+                        <label>__________</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                <a href="/users/searchOffers?page={{ page }}" class="btn btn-secondary">Volver atrás</a>
+            </div>
+        </form>
+    </div>
+
+    <style>
+        .signature-box {
+            border: 2px solid #000; /* Borde negro */
+            border-radius: 4px;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #fff;
+            margin-bottom: 20px;
+        }
+
+        .signature-box img {
+            display: block;
+            margin: 0 auto;
+        }
+    </style>
+{% endblock %}
