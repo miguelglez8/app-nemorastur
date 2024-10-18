@@ -21,7 +21,7 @@ module.exports = {
         } catch (error) {
             throw (error);
         } finally {
-            client.close();
+            closeConnection();
         }
     },
     /**
@@ -39,7 +39,7 @@ module.exports = {
         } catch (error) {
             throw (error);
         } finally {
-            client.close();
+            closeConnection();
         }
     },
     /**
@@ -61,7 +61,7 @@ module.exports = {
         } catch (error) {
             throw (error);
         } finally {
-            client.close();
+            closeConnection();
         }
     },
     /**
@@ -83,7 +83,7 @@ module.exports = {
         } catch (error) {
             throw (error);
         } finally {
-            client.close();
+            closeConnection();
         }
     },
     /**
@@ -105,7 +105,7 @@ module.exports = {
         } catch (error) {
             throw (error);
         } finally {
-            client.close();
+            closeConnection();
         }
     },
     insertOffer: async function (offer) {
@@ -181,7 +181,7 @@ module.exports = {
         } catch (error) {
             throw (error);
         } finally {
-            client.close();
+            closeConnection();
         }
     },
     deleteVehicle: async function (filter, options) {
@@ -196,7 +196,7 @@ module.exports = {
         } catch (error) {
             throw (error);
         } finally {
-            client.close();
+            closeConnection();
         }
     },
     deleteMachine: async function (filter, options) {
@@ -211,7 +211,7 @@ module.exports = {
         } catch (error) {
             throw (error);
         } finally {
-            client.close();
+            closeConnection();
         }
     }
 };
