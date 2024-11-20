@@ -51,7 +51,6 @@ app.set('crypto', crypto);
 /**
  * Cliente de MONGODB
  */
-console.log(process.env)
 const { MongoClient } = require("mongodb");
 const url = 'mongodb+srv://admin:sdi@eii-sdi-cluster.uzjjiv6.mongodb.net/?retryWrites=true&w=majority'
 app.set('connectionStrings', url);
