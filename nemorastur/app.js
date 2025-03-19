@@ -52,7 +52,7 @@ app.set('crypto', crypto);
  * Cliente de MONGODB
  */
 const { MongoClient } = require("mongodb");
-const url = 'mongodb+srv://admin:sdi@eii-sdi-cluster.uzjjiv6.mongodb.net/?retryWrites=true&w=majority'
+const url = 'mongodb://admin:adminpassword@localhost:27017/?authSource=admin'
 app.set('connectionStrings', url);
 
 let expressSession = require('express-session');
