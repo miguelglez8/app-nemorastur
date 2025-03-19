@@ -8,7 +8,7 @@ module.exports = {
     mongoClientInstance = new mongoClient(connectionStrings, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      maxPoolSize: 10, // Configura el tamaño máximo del pool.
+      maxPoolSize: 10
     });
 
     connection = await mongoClientInstance.connect();
